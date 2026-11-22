@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">ReNote</string>
+
+    <!-- D/W/M view switcher -->
+    <string name="switcher_day">D</string>
+    <string name="switcher_week">W</string>
+    <string name="switcher_month">M</string>
+    <string name="switcher_day_description">Day view</string>
+    <string name="switcher_week_description">Week view</string>
+    <string name="switcher_month_description">Month view</string>
+
+    <!-- Common actions -->
+    <string name="action_back">Back</string>
+    <string name="action_add_note">Add note</string>
 </resources>

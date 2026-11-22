@@ -5,13 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.renote.ui.daily.DailyScreen
+import com.example.renote.ui.daily.SampleNotes
 import com.example.renote.ui.theme.ReNoteTheme
+import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,29 +23,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ReNoteTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                StaticDailyHost()
             }
         }
     }
 }
 
+/**
+ * Temporary host for build order step 2: drives the Daily view from hard-coded notes.
+ * Replaced by the NavGraph and DailyViewModel in step 4.
+ */
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+private fun StaticDailyHost() {
+    val startDate = rememberSaveable { LocalDate.now() }
+    var visibleDate by rememberSaveable { mutableStateOf(startDate) }
+    val notesByDate = remember(visibleDate) { SampleNotes.around(visibleDate) }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ReNoteTheme {
-        Greeting("Android")
-    }
+    DailyScreen(
+        startDate = startDate,
+        notesByDate = notesByDate,
+        showBack = false,
+        onVisibleDateChange = { visibleDate = it },
+        onBack = {},
+        onAddNote = {},
+        onNoteClick = {},
+        onSwitchView = {},
+        modifier = Modifier.fillMaxSize(),
+    )
 }
