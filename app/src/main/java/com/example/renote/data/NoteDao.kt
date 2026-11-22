@@ -24,7 +24,14 @@ interface NoteDao {
     )
     fun observeByDate(date: LocalDate): Flow<List<Note>>
 
-    @Query("SELECT * FROM notes WHERE date BETWEEN :from AND :to")
+    /** Notes in an inclusive date range, by date, then each day in the same order as [observeByDate]. */
+    @Query(
+        """
+        SELECT * FROM notes
+        WHERE date BETWEEN :from AND :to
+        ORDER BY date ASC, (time IS NULL), time ASC, createdAt ASC
+        """
+    )
     fun observeByDateRange(from: LocalDate, to: LocalDate): Flow<List<Note>>
 
     @Query("SELECT DISTINCT date FROM notes WHERE date BETWEEN :from AND :to")

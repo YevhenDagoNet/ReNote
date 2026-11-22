@@ -58,4 +58,30 @@ class NoteDaoTest {
             titles
         )
     }
+
+    @Test
+    fun observeByDateRange_byDate_thenCanonicalDayOrder_inclusiveBounds() = runTest {
+        val next = day.plusDays(1)
+        val last = day.plusDays(2)
+        dao.insert(note("before-range", time = LocalTime.of(8, 0), createdOffsetSec = 0, date = day.minusDays(1)))
+        dao.insert(note("last-untimed", time = null, createdOffsetSec = 0, date = last))
+        dao.insert(note("next-untimed", time = null, createdOffsetSec = 0, date = next))
+        dao.insert(note("day-untimed-late", time = null, createdOffsetSec = 300))
+        dao.insert(note("next-timed-10:00", time = LocalTime.of(10, 0), createdOffsetSec = 500, date = next))
+        dao.insert(note("day-timed-14:00", time = LocalTime.of(14, 0), createdOffsetSec = 0))
+        dao.insert(note("day-untimed-early", time = null, createdOffsetSec = 100))
+        dao.insert(note("day-timed-09:30", time = LocalTime.of(9, 30), createdOffsetSec = 400))
+        dao.insert(note("after-range", time = null, createdOffsetSec = 0, date = day.plusDays(3)))
+
+        val titles = dao.observeByDateRange(day, last).first().map { it.title }
+
+        assertEquals(
+            listOf(
+                "day-timed-09:30", "day-timed-14:00", "day-untimed-early", "day-untimed-late",
+                "next-timed-10:00", "next-untimed",
+                "last-untimed",
+            ),
+            titles
+        )
+    }
 }

@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * Hard-coded notes for Compose previews of the Daily view. The running app reads from Room.
+ * Hard-coded notes for Compose previews of the Daily and Weekly views. The running app reads from Room.
  *
  * Each list is written already in the DAO's order (timed by time, then untimed by createdAt),
  * because the UI must never re-sort.
@@ -16,6 +16,12 @@ object SampleNotes {
     /** Notes for [date] and the days either side of it. */
     fun around(date: LocalDate): Map<LocalDate, List<Note>> =
         (-1L..1L).map(date::plusDays).associateWith(::forDate)
+
+    /** Notes for every day from [from] to [to] inclusive. */
+    fun between(from: LocalDate, to: LocalDate): Map<LocalDate, List<Note>> =
+        generateSequence(from) { it.plusDays(1) }
+            .takeWhile { !it.isAfter(to) }
+            .associateWith(::forDate)
 
     /** Cycles through four shapes of day so swiping shows each one. */
     private fun forDate(date: LocalDate): List<Note> = when (Math.floorMod(date.toEpochDay(), 4L).toInt()) {

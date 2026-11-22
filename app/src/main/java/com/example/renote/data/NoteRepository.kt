@@ -17,6 +17,10 @@ class NoteRepository(
     /** A day's notes, already in the canonical order (spec §3). */
     fun observeByDate(date: LocalDate): Flow<List<Note>> = dao.observeByDate(date)
 
+    /** Notes from [from] to [to] inclusive, by date and then in each day's canonical order. */
+    fun observeByDateRange(from: LocalDate, to: LocalDate): Flow<List<Note>> =
+        dao.observeByDateRange(from, to)
+
     suspend fun getById(id: Long): Note? = dao.getById(id)
 
     /** Inserts a new note on [date] and returns its id. */

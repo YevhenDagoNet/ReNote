@@ -18,6 +18,9 @@
     <!-- Daily view -->
     <string name="daily_empty_hint">There are no added items in the list yet. Click \"+\" to add.</string>
 
+    <!-- Weekly view -->
+    <string name="weekly_open_day">Open day</string>
+
     <!-- Confirmation dialog -->
     <string name="confirm_yes">Yes</string>
     <string name="confirm_no">No</string>

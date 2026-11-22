@@ -10,8 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.renote.ui.common.ViewMode
 import com.example.renote.ui.daily.DailyRoute
 import com.example.renote.ui.detail.DetailRoute
+import com.example.renote.ui.weekly.WeeklyRoute
+import java.time.LocalDate
 
 @Composable
 fun ReNoteNavGraph(
@@ -39,7 +42,29 @@ fun ReNoteNavGraph(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
                 onAddNote = { date -> entry.ifResumed { navController.navigate(Routes.detailNew(date)) } },
                 onNoteClick = { id -> entry.ifResumed { navController.navigate(Routes.detailEdit(id)) } },
-                onSwitchView = {}, // Wired up in build order step 7.
+                onSwitchView = { mode ->
+                    when (mode) {
+                        ViewMode.WEEK -> navController.switchTo(Routes.weekly(LocalDate.now()), entry)
+                        ViewMode.DAY, ViewMode.MONTH -> Unit // Month arrives in build order step 6.
+                    }
+                },
+            )
+        }
+
+        composable(
+            route = Routes.WEEKLY,
+            arguments = listOf(navArgument(Routes.ARG_ANCHOR_DATE) { type = NavType.StringType }),
+        ) { entry ->
+            WeeklyRoute(
+                onDayClick = { date ->
+                    entry.ifResumed { navController.navigate(Routes.daily(date, DailyOrigin.WEEK)) }
+                },
+                onSwitchView = { mode ->
+                    when (mode) {
+                        ViewMode.DAY -> navController.switchTo(Routes.daily(LocalDate.now()), entry)
+                        ViewMode.WEEK, ViewMode.MONTH -> Unit // Month arrives in build order step 6.
+                    }
+                },
             )
         }
 
@@ -62,6 +87,18 @@ fun ReNoteNavGraph(
         ) { entry ->
             // Detail is only ever opened from Daily, so popping returns to daily/{date}.
             DetailRoute(onClose = { entry.ifResumed { navController.popBackStack() } })
+        }
+    }
+}
+
+/**
+ * The D/W/M switcher's navigation (spec §5): [route] replaces the screen of [entry] instead of
+ * stacking on top of it, so switching views never adds to the back stack.
+ */
+private fun NavHostController.switchTo(route: String, entry: NavBackStackEntry) {
+    entry.ifResumed {
+        navigate(route) {
+            popUpTo(entry.destination.id) { inclusive = true }
         }
     }
 }
