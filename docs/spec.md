@@ -153,7 +153,9 @@ The system back button behaves identically to "<" wherever "<" is shown.
   - Row height target: **~88dp**, so about 7 rows fit on a typical phone screen without
     scrolling. This is a guideline for sizing, not a hard rule — fewer rows on a small
     screen is acceptable. The list scrolls freely beyond that.
-- Empty state: blank list, FAB still present.
+- Empty state: a centred hint, "There are no added items in the list yet. Click "+" to
+  add.", with the FAB still present. It is hidden as soon as the day has at least one note,
+  and is not shown while the day's notes are still loading.
 - **FAB "+"**: bottom right, present on Daily **only**. It does not overlap content
   (`Scaffold` content padding + a trailing spacer in the list). It opens
   `detail/new?date=<the day currently shown>` — the shown day, never today.

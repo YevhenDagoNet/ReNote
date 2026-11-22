@@ -1,5 +1,6 @@
 package com.example.renote.ui.daily
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -13,6 +14,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -21,9 +23,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -74,8 +78,9 @@ fun DailyRoute(
 
 /**
  * Daily view (spec §6.1). Stateless: [notesByDate] must contain the visible day and, ideally,
- * its neighbours so a swipe never shows an empty page while loading. Days missing from the
- * map render as empty. [onVisibleDateChange] reports the day the pager has moved to.
+ * its neighbours so a swipe never shows an empty page while loading. A day missing from the
+ * map is treated as still loading and renders blank; a day mapped to an empty list shows the
+ * empty-day hint. [onVisibleDateChange] reports the day the pager has moved to.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,11 +151,31 @@ fun DailyScreen(
                 .padding(innerPadding),
             key = { it },
         ) { page ->
-            DayNoteList(
-                notes = notesByDate[pageToDate(startDate, page)].orEmpty(),
-                onNoteClick = onNoteClick,
-            )
+            val notes = notesByDate[pageToDate(startDate, page)]
+            when {
+                notes == null -> Unit // Still loading: blank rather than a flash of the empty hint.
+                notes.isEmpty() -> EmptyDayHint()
+                else -> DayNoteList(notes = notes, onNoteClick = onNoteClick)
+            }
         }
+    }
+}
+
+/** Shown, centred, only for a loaded day that has no notes at all. */
+@Composable
+private fun EmptyDayHint(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.daily_empty_hint),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
