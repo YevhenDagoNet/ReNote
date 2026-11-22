@@ -12,4 +12,22 @@
     <!-- Common actions -->
     <string name="action_back">Back</string>
     <string name="action_add_note">Add note</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+
+    <!-- Confirmation dialog -->
+    <string name="confirm_yes">Yes</string>
+    <string name="confirm_no">No</string>
+
+    <!-- Item detail screen -->
+    <string name="detail_title_new">New note</string>
+    <string name="detail_title_edit">Edit note</string>
+    <string name="detail_field_title">Title</string>
+    <string name="detail_field_description">Description</string>
+    <string name="detail_title_counter">%1$d / %2$d</string>
+    <string name="detail_add_time">Add time</string>
+    <string name="detail_change_time">Change time, currently %1$s</string>
+    <string name="detail_clear_time">Remove time</string>
+    <string name="detail_delete">Delete note</string>
+    <string name="detail_delete_confirm">Are you sure you want to delete the item?</string>
 </resources>

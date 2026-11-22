@@ -214,7 +214,7 @@ Actions:
 - **Cancel** — discards everything and navigates back to `daily/{date}`.
   The system back button is equivalent to Cancel.
 - **Delete** — only on an existing note. A red "x" in the top-right corner opens a
-  confirmation dialog reading "Are you sure you want to delete the item", with:
+  confirmation dialog reading "Are you sure you want to delete the item?", with:
   - "Yes" → the note is deleted and the user returns to `daily/{date}`
   - "No" → the dialog closes, the user stays on the detail screen
 
