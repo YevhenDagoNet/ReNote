@@ -29,6 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,16 +43,47 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.renote.R
 import com.example.renote.data.Note
 import com.example.renote.ui.common.ConfirmDialog
 import com.example.renote.ui.common.rememberTimeFormatter
 import com.example.renote.ui.theme.ReNoteTheme
-import java.time.LocalDate
 import java.time.LocalTime
 
 /** The title counter appears once the title is this close to [Note.TITLE_MAX_LENGTH]. */
 private const val TITLE_COUNTER_THRESHOLD = Note.TITLE_MAX_LENGTH - 20
+
+/**
+ * Screen-level entry point: the only place the Detail ViewModel is collected. [onClose] is
+ * called for Cancel and once the note has been saved, deleted or found missing; the system
+ * back button is left to the NavHost, which makes it equivalent to Cancel.
+ */
+@Composable
+fun DetailRoute(
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: DetailViewModel = viewModel(factory = DetailViewModel.Factory),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentOnClose by rememberUpdatedState(onClose)
+    LaunchedEffect(state.isClosed) {
+        if (state.isClosed) currentOnClose()
+    }
+    DetailScreen(
+        state = state,
+        onTitleChange = viewModel::onTitleChange,
+        onDescriptionChange = viewModel::onDescriptionChange,
+        onTimeChange = viewModel::onTimeChange,
+        onSave = viewModel::save,
+        onCancel = onClose,
+        onDeleteClick = viewModel::onDeleteClick,
+        onDeleteConfirm = viewModel::onDeleteConfirm,
+        onDeleteDismiss = viewModel::onDeleteDismiss,
+        modifier = modifier,
+    )
+}
 
 /**
  * Item detail screen (spec §6.4), used for both creating and editing a note.
@@ -109,6 +143,9 @@ fun DetailScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Reading one row from a local database takes milliseconds; an empty body for
+            // that moment beats flashing blank fields that then fill in.
+            if (state.isLoading) return@Column
             TitleField(title = state.title, onTitleChange = onTitleChange)
             TimeField(time = state.time, onTimeChange = onTimeChange)
             OutlinedTextField(
@@ -251,7 +288,7 @@ private fun showTimePicker(context: Context, initial: LocalTime, onPicked: (Loca
 private fun DetailScreenNewPreview() {
     ReNoteTheme {
         DetailScreen(
-            state = DetailUiState(date = LocalDate.of(2026, 11, 22), isNew = true),
+            state = DetailUiState(isNew = true),
             onTitleChange = {},
             onDescriptionChange = {},
             onTimeChange = {},
@@ -270,7 +307,6 @@ private fun DetailScreenEditPreview() {
     ReNoteTheme {
         DetailScreen(
             state = DetailUiState(
-                date = LocalDate.of(2026, 11, 22),
                 isNew = false,
                 title = "Dentist appointment",
                 description = "Clinic on Main Street, bring the insurance card.",

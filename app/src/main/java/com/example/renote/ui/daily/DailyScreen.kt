@@ -27,6 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.renote.R
 import com.example.renote.data.Note
 import com.example.renote.ui.common.NoteRow
@@ -45,6 +47,30 @@ private val FabClearance = 88.dp
 
 private fun pageToDate(startDate: LocalDate, page: Int): LocalDate =
     startDate.plusDays((page - START_PAGE).toLong())
+
+/** Screen-level entry point: the only place the Daily ViewModel is collected. */
+@Composable
+fun DailyRoute(
+    onBack: () -> Unit,
+    onAddNote: (date: LocalDate) -> Unit,
+    onNoteClick: (noteId: Long) -> Unit,
+    onSwitchView: (ViewMode) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: DailyViewModel = viewModel(factory = DailyViewModel.Factory),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    DailyScreen(
+        startDate = state.startDate,
+        notesByDate = state.notesByDate,
+        showBack = state.showBack,
+        onVisibleDateChange = viewModel::onVisibleDateChange,
+        onBack = onBack,
+        onAddNote = onAddNote,
+        onNoteClick = onNoteClick,
+        onSwitchView = onSwitchView,
+        modifier = modifier,
+    )
+}
 
 /**
  * Daily view (spec §6.1). Stateless: [notesByDate] must contain the visible day and, ideally,

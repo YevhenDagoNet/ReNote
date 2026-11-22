@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 /**
- * Hard-coded notes for the static Daily view (build order step 2). Replaced by Room in step 4.
+ * Hard-coded notes for Compose previews of the Daily view. The running app reads from Room.
  *
  * Each list is written already in the DAO's order (timed by time, then untimed by createdAt),
  * because the UI must never re-sort.
