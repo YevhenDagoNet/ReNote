@@ -21,6 +21,10 @@
     <!-- Weekly view -->
     <string name="weekly_open_day">Open day</string>
 
+    <!-- Month view -->
+    <string name="monthly_open_day">Open day</string>
+    <string name="monthly_day_has_notes">%1$s, has notes</string>
+
     <!-- Confirmation dialog -->
     <string name="confirm_yes">Yes</string>
     <string name="confirm_no">No</string>

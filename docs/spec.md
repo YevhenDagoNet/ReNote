@@ -119,7 +119,9 @@ testing says otherwise):
 
 - `D` → the **current** day
 - `W` → the **current** week
-- `M` → the month currently being viewed
+- `M` → the month currently being viewed. From Daily, the month of the shown day. From
+  Weekly, where a week can span two months: today's month if today is in the shown week,
+  otherwise the month of the week's Thursday (the one holding most of its days).
 
 > Open point, to revisit after live testing: carrying the viewed date across the switch
 > (viewing 20 March → `W` → week of 16–22 March) is more intuitive than always jumping

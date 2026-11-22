@@ -1,6 +1,7 @@
 package com.example.renote.navigation
 
 import java.time.LocalDate
+import java.time.YearMonth
 
 /** How the Daily view was reached; decides whether "<" is shown (spec §5). */
 enum class DailyOrigin(val routeValue: String) {
@@ -20,11 +21,14 @@ object Routes {
     const val ARG_FROM = "from"
     const val ARG_NOTE_ID = "noteId"
     const val ARG_ANCHOR_DATE = "anchorDate"
+    const val ARG_YEAR_MONTH = "yearMonth"
 
     /** A missing [ARG_DATE] means today; only the start destination relies on that. */
     const val DAILY = "daily/{$ARG_DATE}?$ARG_FROM={$ARG_FROM}"
     /** [ARG_ANCHOR_DATE] is any date inside the week to show. */
     const val WEEKLY = "weekly/{$ARG_ANCHOR_DATE}"
+    /** [ARG_YEAR_MONTH] is `yyyy-MM`. */
+    const val MONTHLY = "monthly/{$ARG_YEAR_MONTH}"
     const val DETAIL_NEW = "detail/new?$ARG_DATE={$ARG_DATE}"
     const val DETAIL_EDIT = "detail/{$ARG_NOTE_ID}"
 
@@ -32,6 +36,8 @@ object Routes {
         "daily/$date?$ARG_FROM=${from.routeValue}"
 
     fun weekly(anchorDate: LocalDate): String = "weekly/$anchorDate"
+
+    fun monthly(yearMonth: YearMonth): String = "monthly/$yearMonth"
 
     fun detailNew(date: LocalDate): String = "detail/new?$ARG_DATE=$date"
 

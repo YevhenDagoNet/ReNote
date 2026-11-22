@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
+import java.time.YearMonth
 
 /** Saved-state key for the day the pager currently shows (ISO string). */
 private const val KEY_VISIBLE_DATE = "visibleDate"
@@ -64,6 +65,10 @@ class DailyViewModel(
     fun onVisibleDateChange(date: LocalDate) {
         savedStateHandle[KEY_VISIBLE_DATE] = date.toString()
     }
+
+    /** The month the switcher's M opens from here: the month of the day being shown (spec §5). */
+    fun viewedMonth(): YearMonth =
+        YearMonth.from(LocalDate.parse(savedStateHandle[KEY_VISIBLE_DATE] ?: startDate.toString()))
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

@@ -41,6 +41,7 @@ import com.example.renote.ui.common.ViewSwitcher
 import com.example.renote.ui.common.rememberDayTitleFormatter
 import com.example.renote.ui.theme.ReNoteTheme
 import java.time.LocalDate
+import java.time.YearMonth
 
 /** Pages are effectively unbounded in both directions; [startDate] sits in the middle. */
 private const val PAGE_COUNT = Int.MAX_VALUE
@@ -58,7 +59,7 @@ fun DailyRoute(
     onBack: () -> Unit,
     onAddNote: (date: LocalDate) -> Unit,
     onNoteClick: (noteId: Long) -> Unit,
-    onSwitchView: (ViewMode) -> Unit,
+    onSwitchView: (mode: ViewMode, viewedMonth: YearMonth) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DailyViewModel = viewModel(factory = DailyViewModel.Factory),
 ) {
@@ -71,7 +72,7 @@ fun DailyRoute(
         onBack = onBack,
         onAddNote = onAddNote,
         onNoteClick = onNoteClick,
-        onSwitchView = onSwitchView,
+        onSwitchView = { mode -> onSwitchView(mode, viewModel.viewedMonth()) },
         modifier = modifier,
     )
 }

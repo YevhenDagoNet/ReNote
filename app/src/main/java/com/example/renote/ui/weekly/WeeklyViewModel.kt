@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
 
 /** Saved-state key for the Monday of the week the pager currently shows (ISO string). */
@@ -77,6 +78,16 @@ class WeeklyViewModel(
     /** [monday] is the first day of the week the pager has moved to. */
     fun onVisibleWeekChange(monday: LocalDate) {
         savedStateHandle[KEY_VISIBLE_WEEK] = monday.toString()
+    }
+
+    /**
+     * The month the switcher's M opens from here (spec §5): today's month when today is in the
+     * shown week, otherwise the month of the week's Thursday, which holds most of its days.
+     */
+    fun viewedMonth(): YearMonth {
+        val monday = LocalDate.parse(savedStateHandle[KEY_VISIBLE_WEEK] ?: startWeek.toString())
+        val todayInWeek = !today.isBefore(monday) && !today.isAfter(monday.plusDays(6))
+        return YearMonth.from(if (todayInWeek) today else monday.plusDays(3))
     }
 
     companion object {

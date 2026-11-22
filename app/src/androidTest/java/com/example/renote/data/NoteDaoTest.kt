@@ -84,4 +84,19 @@ class NoteDaoTest {
             titles
         )
     }
+
+    @Test
+    fun observeDatesWithNotes_distinctDays_inclusiveBounds() = runTest {
+        val last = day.plusDays(10)
+        dao.insert(note("before-range", time = null, createdOffsetSec = 0, date = day.minusDays(1)))
+        dao.insert(note("first-a", time = null, createdOffsetSec = 0))
+        dao.insert(note("first-b", time = LocalTime.of(9, 0), createdOffsetSec = 100))
+        dao.insert(note("middle", time = null, createdOffsetSec = 0, date = day.plusDays(4)))
+        dao.insert(note("last", time = null, createdOffsetSec = 0, date = last))
+        dao.insert(note("after-range", time = null, createdOffsetSec = 0, date = last.plusDays(1)))
+
+        val dates = dao.observeDatesWithNotes(day, last).first()
+
+        assertEquals(listOf(day, day.plusDays(4), last), dates.sorted())
+    }
 }

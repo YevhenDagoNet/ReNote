@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.example.renote.ui.common.ViewMode
 import com.example.renote.ui.daily.DailyRoute
 import com.example.renote.ui.detail.DetailRoute
+import com.example.renote.ui.monthly.MonthlyRoute
 import com.example.renote.ui.weekly.WeeklyRoute
 import java.time.LocalDate
 
@@ -42,10 +43,11 @@ fun ReNoteNavGraph(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
                 onAddNote = { date -> entry.ifResumed { navController.navigate(Routes.detailNew(date)) } },
                 onNoteClick = { id -> entry.ifResumed { navController.navigate(Routes.detailEdit(id)) } },
-                onSwitchView = { mode ->
+                onSwitchView = { mode, viewedMonth ->
                     when (mode) {
+                        ViewMode.DAY -> Unit
                         ViewMode.WEEK -> navController.switchTo(Routes.weekly(LocalDate.now()), entry)
-                        ViewMode.DAY, ViewMode.MONTH -> Unit // Month arrives in build order step 6.
+                        ViewMode.MONTH -> navController.switchTo(Routes.monthly(viewedMonth), entry)
                     }
                 },
             )
@@ -59,10 +61,29 @@ fun ReNoteNavGraph(
                 onDayClick = { date ->
                     entry.ifResumed { navController.navigate(Routes.daily(date, DailyOrigin.WEEK)) }
                 },
+                onSwitchView = { mode, viewedMonth ->
+                    when (mode) {
+                        ViewMode.DAY -> navController.switchTo(Routes.daily(LocalDate.now()), entry)
+                        ViewMode.WEEK -> Unit
+                        ViewMode.MONTH -> navController.switchTo(Routes.monthly(viewedMonth), entry)
+                    }
+                },
+            )
+        }
+
+        composable(
+            route = Routes.MONTHLY,
+            arguments = listOf(navArgument(Routes.ARG_YEAR_MONTH) { type = NavType.StringType }),
+        ) { entry ->
+            MonthlyRoute(
+                onDayClick = { date ->
+                    entry.ifResumed { navController.navigate(Routes.daily(date, DailyOrigin.MONTH)) }
+                },
                 onSwitchView = { mode ->
                     when (mode) {
                         ViewMode.DAY -> navController.switchTo(Routes.daily(LocalDate.now()), entry)
-                        ViewMode.WEEK, ViewMode.MONTH -> Unit // Month arrives in build order step 6.
+                        ViewMode.WEEK -> navController.switchTo(Routes.weekly(LocalDate.now()), entry)
+                        ViewMode.MONTH -> Unit
                     }
                 },
             )

@@ -47,6 +47,7 @@ import com.example.renote.ui.common.rememberDateRangeFormatter
 import com.example.renote.ui.daily.SampleNotes
 import com.example.renote.ui.theme.ReNoteTheme
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.TextStyle
 
 /** Pages are effectively unbounded in both directions; the start week sits in the middle. */
@@ -66,7 +67,7 @@ private fun pageToMonday(startWeek: LocalDate, page: Int): LocalDate =
 @Composable
 fun WeeklyRoute(
     onDayClick: (date: LocalDate) -> Unit,
-    onSwitchView: (ViewMode) -> Unit,
+    onSwitchView: (mode: ViewMode, viewedMonth: YearMonth) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: WeeklyViewModel = viewModel(factory = WeeklyViewModel.Factory),
 ) {
@@ -77,7 +78,7 @@ fun WeeklyRoute(
         today = state.today,
         onVisibleWeekChange = viewModel::onVisibleWeekChange,
         onDayClick = onDayClick,
-        onSwitchView = onSwitchView,
+        onSwitchView = { mode -> onSwitchView(mode, viewModel.viewedMonth()) },
         modifier = modifier,
     )
 }

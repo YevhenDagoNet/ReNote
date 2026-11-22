@@ -21,6 +21,10 @@ class NoteRepository(
     fun observeByDateRange(from: LocalDate, to: LocalDate): Flow<List<Note>> =
         dao.observeByDateRange(from, to)
 
+    /** The distinct days from [from] to [to] inclusive that have at least one note. */
+    fun observeDatesWithNotes(from: LocalDate, to: LocalDate): Flow<List<LocalDate>> =
+        dao.observeDatesWithNotes(from, to)
+
     suspend fun getById(id: Long): Note? = dao.getById(id)
 
     /** Inserts a new note on [date] and returns its id. */

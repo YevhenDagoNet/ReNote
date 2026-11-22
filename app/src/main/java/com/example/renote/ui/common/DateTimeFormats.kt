@@ -10,6 +10,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 /**
  * Formatters built from the system's own patterns, so the locale's date order and the
@@ -23,6 +24,22 @@ fun rememberDayTitleFormatter(): DateTimeFormatter {
     return remember(locale) {
         DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(locale, "EEEMMMdyyyy"), locale)
     }
+}
+
+/** Month name and full year for the Month view title, e.g. "October 2026". */
+@Composable
+fun rememberMonthTitleFormatter(): DateTimeFormatter {
+    val locale = LocalConfiguration.current.locales[0]
+    return remember(locale) {
+        DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(locale, "MMMMyyyy"), locale)
+    }
+}
+
+/** A full date for accessibility labels, e.g. "Sunday, November 22, 2026". */
+@Composable
+fun rememberFullDateFormatter(): DateTimeFormatter {
+    val locale = LocalConfiguration.current.locales[0]
+    return remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }
 }
 
 /**
