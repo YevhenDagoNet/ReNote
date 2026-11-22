@@ -232,7 +232,7 @@ private fun TimeField(
                 onClick = openPicker,
                 modifier = Modifier.semantics { contentDescription = changeDescription },
             ) {
-                Text(formatted, style = MaterialTheme.typography.titleMedium)
+                Text(formatted, style = MaterialTheme.typography.bodyLarge)
             }
             IconButton(onClick = { onTimeChange(null) }) {
                 Icon(

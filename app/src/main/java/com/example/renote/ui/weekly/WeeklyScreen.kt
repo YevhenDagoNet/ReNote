@@ -204,7 +204,7 @@ private fun DayTile(
     val locale = LocalConfiguration.current.locales[0]
     val listState = rememberLazyListState()
     val borderColor =
-        if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+        if (isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
     val thumbColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
 
     Column(

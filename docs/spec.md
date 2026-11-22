@@ -241,7 +241,8 @@ and the FAB.
 v1 approximation (full confirmation pending):
 
 - Cream surface (`#FAF6EC`-ish), dark warm grey text, amber accent.
-- A handwriting font from Google Fonts for titles and day names; a readable sans for note
+- A handwriting font from Google Fonts for titles and day names (Caveat, bundled in
+  `res/font`; chosen because it covers Cyrillic); a readable sans for note
   bodies and input fields.
 - Standard Material 3 borders and shapes. Genuine hand-drawn borders would mean custom
   `Canvas` drawing or nine-patch assets and are out of scope for v1.
