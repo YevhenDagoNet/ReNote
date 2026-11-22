@@ -113,13 +113,14 @@ fun ReNoteNavGraph(
 }
 
 /**
- * The D/W/M switcher's navigation (spec §5): [route] replaces the screen of [entry] instead of
- * stacking on top of it, so switching views never adds to the back stack.
+ * The D/W/M switcher's navigation (spec §5). The switcher is top-level navigation: [route]
+ * clears the whole back stack, drill-down parents included, and becomes its only entry. Back
+ * from there exits the app, which matches the absence of "<" on every switcher target.
  */
 private fun NavHostController.switchTo(route: String, entry: NavBackStackEntry) {
     entry.ifResumed {
         navigate(route) {
-            popUpTo(entry.destination.id) { inclusive = true }
+            popUpTo(graph.id) { inclusive = true }
         }
     }
 }

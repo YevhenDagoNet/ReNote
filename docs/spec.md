@@ -110,9 +110,13 @@ Start destination: `daily/<today>?from=none`.
 
 A segmented control in the top-right corner of Daily, Weekly and Monthly.
 
-It **replaces** the current screen rather than stacking on top of it, and it does not
-contribute to the back stack. Implementation: `popUpTo` the current destination with
-`inclusive = true`.
+It is top-level navigation: the target screen **replaces the whole back stack** and
+becomes its only entry. Drill-down parents underneath are cleared as well, so system back
+from any screen reached via the switcher exits the app. Implementation: `popUpTo` the
+navigation graph (`graph.id`) with `inclusive = true`.
+
+- Weekly → tap a day → Daily ("<") → `M` leaves `[Monthly]`, not `[Weekly, Monthly]`.
+- Weekly → tap a day → Daily ("<") → `W` leaves `[Weekly]`, not two Weekly entries.
 
 Target of each button (v1, taken from `Month view` and left as written until live
 testing says otherwise):
